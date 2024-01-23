@@ -12,6 +12,9 @@ public class Room {
     private final List<Animal> animals;
 
     @Getter
+    private Map<Direction, Door> doors;
+
+    @Getter
     private final Map<Direction, Room> adjacentRooms;
 
     public Room(String name) {
@@ -19,6 +22,8 @@ public class Room {
         this.items = new ArrayList<>();
         this.animals = new ArrayList<>();
         this.adjacentRooms = new EnumMap<>(Direction.class);
+        this.doors = new EnumMap<>(Direction.class);
+
     }
 
     public void addItem(Item item) {
@@ -33,9 +38,10 @@ public class Room {
         animals.add(animal);
     }
 
-    public void addAdjacentRooms(Direction direction, Room room){
+    public void addAdjacentRooms(Direction direction, Room room) {
         adjacentRooms.put(direction, room);
     }
+
 
     public void getInformation() {
         System.out.println("You are in " + getName());
@@ -66,4 +72,18 @@ public class Room {
                 .findFirst()
                 .orElse(null);
     }
+
+    public void addDoor(Direction direction, Door door) {
+        doors.put(direction, door);
+    }
+
+    public boolean openDoor(Direction direction, Item key) {
+        Door door = doors.get(direction);
+        if (door != null && door.isLocked() && door.getKey().equals(key)) {
+            door.unlock();
+            return true;
+        }
+        return false;
+    }
+
 }
