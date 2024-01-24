@@ -35,11 +35,11 @@ public class GoCommand implements Command{
                     System.out.println("The answer must be Y or N");
                     String answer = InputController.readString();
 
-                    if (Objects.equals(answer, "Y")) {
+                    if (answer.equalsIgnoreCase("y")) {
                         System.out.println("Type the name of the chosen item");
                         String answerItemName = InputController.readString();
 
-                        if (requiredItem.toString() == answerItemName || player.getItemsFromBag().contains(requiredItem)) {
+                        if (requiredItem.getName().equalsIgnoreCase(answerItemName) && player.getItemsFromBag().contains(requiredItem)) {
                             currentRoom.openDoor(directionName, requiredItem);
                             gameController.getPlayer().removeItemFromBag(requiredItem);
                             Room nextRoom = currentRoom.move(direction);
@@ -49,7 +49,7 @@ public class GoCommand implements Command{
                         }else{
                             System.out.println("The item you chose is wrong or you don't have it");
                         }
-                    } else if(Objects.equals(answer, "N")) {
+                    } else if(answer.equalsIgnoreCase("n")) {
                         System.out.println("You don't move from the position");
                     } else{
                         System.out.println("The answer must be Y or N");

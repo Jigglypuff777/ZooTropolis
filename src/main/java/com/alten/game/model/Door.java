@@ -1,21 +1,16 @@
 package com.alten.game.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 public class Door {
-    private boolean locked;
+    private boolean locked = true;
     private final Item key;
-
-    public Door(Item key) {
-        this.locked = true;
-        this.key = key;
-    }
 
     public void unlock() {
         locked = false;

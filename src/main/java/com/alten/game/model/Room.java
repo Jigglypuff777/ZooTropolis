@@ -45,6 +45,15 @@ public class Room {
 
     public void getInformation() {
         System.out.println("You are in " + getName());
+
+        for (Map.Entry<Direction, Door> entry : doors.entrySet()){
+            Direction direction = entry.getKey();
+            Door door = entry.getValue();
+
+            String doorStatus = door.isLocked() ? "locked" : "unlocked";
+            System.out.println("The door direction " + direction + " is currently " + doorStatus);
+        }
+
         System.out.print("Items: ");
         for (Item item : items) {
             System.out.print(item + " ");
@@ -85,5 +94,7 @@ public class Room {
         }
         return false;
     }
+
+
 
 }

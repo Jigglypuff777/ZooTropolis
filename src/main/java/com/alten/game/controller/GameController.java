@@ -79,8 +79,8 @@ public class GameController {
         cave.addAnimal(pinco);
 
         //creation doors
-        Door door1 = new Door(true, sword);
-        Door door2 = new Door(true, ring);
+        Door door1 = new Door(sword);
+        Door door2 = new Door(ring);
 
         //associate the door to the room
         castle.addDoor(Direction.NORTH, door1);
