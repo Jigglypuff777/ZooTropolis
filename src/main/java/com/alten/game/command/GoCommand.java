@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
@@ -24,44 +23,62 @@ public class GoCommand implements Command{
             Direction directionName = Direction.getDirectionFromName(direction);
 
             if (gameController.getCurrentRoom().checkDirection(direction)) {
-                Room currentRoom = gameController.getCurrentRoom();
-                Door door = currentRoom.getDoors().get(directionName);
-
-                if (door != null && door.isLocked()) {
-                    Item requiredItem = door.getKey();
-                    Player player = gameController.getPlayer();
-                    System.out.println("The door is locked: would you like to use an item to unlock it?");
-                    System.out.println("The required item is : " + requiredItem.getName());
-                    System.out.println("The answer must be Y or N");
-                    String answer = InputController.readString();
-
-                    if (answer.equalsIgnoreCase("y")) {
-                        System.out.println("Type the name of the chosen item");
-                        String answerItemName = InputController.readString();
-
-                        if (requiredItem.getName().equalsIgnoreCase(answerItemName) && player.getItemsFromBag().contains(requiredItem)) {
-                            currentRoom.openDoor(directionName, requiredItem);
-                            gameController.getPlayer().removeItemFromBag(requiredItem);
-                            Room nextRoom = currentRoom.move(direction);
-                            System.out.println("You unlocked the door!");
-                            gameController.setCurrentRoom(nextRoom);
-                            gameController.getCurrentRoom().getInformation();
-                        }else{
-                            System.out.println("The item you chose is wrong or you don't have it");
-                        }
-                    } else if(answer.equalsIgnoreCase("n")) {
-                        System.out.println("You don't move from the position");
-                    } else{
-                        System.out.println("The answer must be Y or N");
-                    }
-                } else {
-                    Room nextRoom = currentRoom.move(direction);
-                    gameController.setCurrentRoom(nextRoom);
-                    gameController.getCurrentRoom().getInformation();
-                }
+                handleValidDirection(directionName);
             } else {
-                System.out.println("Invalid direction");
+                System.out.println("There is no room in that direction");
             }
         }
     }
+
+    private void handleValidDirection(Direction directionName){
+        Room currentRoom = gameController.getCurrentRoom();
+        Door door = currentRoom.getDoors().get(directionName);
+
+        if (door != null && door.isLocked()){
+            controlLockedDoor(directionName, door);
+        }else {
+            moveWithoutUnlocking(directionName);
+        }
+    }
+
+    public void controlLockedDoor(Direction directionName, Door door){
+        Item requiredItem = door.getKey();
+        Player player = gameController.getPlayer();
+
+        System.out.println("The door is locked: would you like to use an item to unlock it?");
+        System.out.println("The required item is : " + requiredItem.getName());
+        System.out.println("The answer must be Y or N");
+
+        String answer = InputController.readString();
+        if(answer.equalsIgnoreCase("y")){
+            unlockDoor(directionName, requiredItem, player);
+        } else if (answer.equalsIgnoreCase("n")) {
+            System.out.println("you won't move from here");
+        }else {
+            System.out.println("The answer must be Y or N");
+        }
+    }
+
+    public void unlockDoor(Direction directionName, Item requiredItem, Player player){
+        System.out.println("Type the name of the chosen item");
+        String answerItemName = InputController.readString();
+
+        if (requiredItem.getName().equalsIgnoreCase(answerItemName) && player.getItemsFromBag().contains(requiredItem)) {
+            gameController.getCurrentRoom().openDoor(directionName, requiredItem);
+            gameController.getPlayer().removeItemFromBag(requiredItem);
+            Room nextRoom = gameController.getCurrentRoom().move(directionName.toString());
+            System.out.println("You unlocked the door!");
+            gameController.setCurrentRoom(nextRoom);
+            gameController.getCurrentRoom().getInformation();
+        }else{
+            System.out.println("The item you chose is wrong or you don't have it");
+        }
+    }
+
+    public void moveWithoutUnlocking(Direction directionName){
+        Room nextRoom = gameController.getCurrentRoom().move(directionName.toString());
+        gameController.setCurrentRoom(nextRoom);
+        gameController.getCurrentRoom().getInformation();
+    }
+
 }

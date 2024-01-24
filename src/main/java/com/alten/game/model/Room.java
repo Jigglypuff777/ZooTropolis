@@ -12,7 +12,7 @@ public class Room {
     private final List<Animal> animals;
 
     @Getter
-    private Map<Direction, Door> doors;
+    private final Map<Direction, Door> doors;
 
     @Getter
     private final Map<Direction, Room> adjacentRooms;
